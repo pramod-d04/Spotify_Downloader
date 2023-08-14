@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Songs</title>
+    <script>
+        function downloadAll() {
+            var links = document.querySelectorAll(".song-link");
+            for (var i = 0; i < links.length; i++) {
+                window.open(links[i].href, '_blank');
+            }
+            document.getElementById('successMessage').style.display = 'block';
+
+            setTimeout(function() {
+                window.location.href = '/';
+            }, 15000);
+        }
+    </script>
+</head>
+<body>
+    <h1>Songs</h1>
+    <form action="/download" method="post">
+        <ul>
+            {% for track_info in track_infos %}
+            <li>
+                <input type="checkbox" name="youtube_links" value="{{ track_info['link'] }}">
+                <img src="{{ track_info['poster'] }}" alt="{{ track_info['track_title'] }}" width="100">
+                <p>{{ track_info['track_title'] }} by {{ track_info['artist_name'] }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        <input type="submit" value="Download Selected Songs">
+        <button onclick="downloadAll()">Download All</button>
+    </form>
+</body>
+</html>
