@@ -4,7 +4,6 @@ import logging
 import json
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from youtubesearchpython import SearchVideos
 import yt_dlp as ydlp
 
 app = Flask(__name__)
@@ -19,7 +18,7 @@ client_credentials_manager = SpotifyClientCredentials(
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def validate_url(sp_url):
-    if re.search(r"^(https?://)?open\.spotify\.com/(playlist|track)/.+$", sp_url):
+    if re.search(r"^(https?://)?open\.spotify\.com/(playlist|track|album)/.+$", sp_url):
         return sp_url
     raise ValueError("Invalid Spotify URL")
 
@@ -34,33 +33,43 @@ def get_playlist_info(sp_playlist):
     tracks = [item["track"] for item in playlist["items"]]
     return [get_track_info(track) for track in tracks]
 
+def get_album_info(sp_album):
+    album = sp.album_tracks(sp_album)
+    tracks = [item for item in album["items"]]
+    return [get_track_info(track) for track in tracks]
+
 def search_youtube(song_name):
-    try:
-        search = SearchVideos(song_name, offset=1, mode="json", max_results=1)
-        results = search.result()
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'noplaylist': True,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'ytsearch',
+        'force_generic_extractor': True,
+    }
 
-        results_dict = json.loads(results)
-        video_info = results_dict['search_result'][0] if 'search_result' in results_dict else None
-
-        if video_info:
+    with ydlp.YoutubeDL(ydl_opts) as ydl:
+        try:
+            result = ydl.extract_info(song_name, download=False)
+            if 'entries' in result:
+                video = result['entries'][0]
+            else:
+                video = result
             return {
-                "link": video_info['link'],
-                "poster": video_info['thumbnails'][0]
+                "link": video['webpage_url'],
+                "poster": video['thumbnail']
             }
-        return None
-
-    except Exception as e:
-        logging.error(f"Error searching for {song_name} on YouTube. Reason: {e}")
-        return None
+        except Exception as e:
+            logging.error(f"Error searching for {song_name} on YouTube. Reason: {e}")
+            return None
 
 def download_song_with_yt_dlp(link, download_path):
     ydl_opts = {
         'outtmpl': f'{download_path}/%(title)s.%(ext)s'
     }
-    
+
     with ydlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([link])
-
 
 @app.route('/')
 def index():
@@ -79,10 +88,12 @@ def search_songs():
         songs_info = [get_track_info(track)]
     elif "playlist" in url:
         songs_info = get_playlist_info(url)
+    elif "album" in url:
+        songs_info = get_album_info(url)
     else:
-        return "Invalid Spotify URL type. Supported types are track and playlist.", 400
+        return "Invalid Spotify URL type. Supported types are track, playlist, and album.", 400
 
-    track_infos = [] 
+    track_infos = []
     for track_info in songs_info:
         youtube_data = search_youtube(f"{track_info['artist_name']} - {track_info['track_title']}")
         if youtube_data:
@@ -94,8 +105,8 @@ def search_songs():
 
 @app.route('/download', methods=['POST'])
 def download_song():
-    links = request.form.getlist('youtube_links')  
-    download_path = "./downloads"  
+    links = request.form.getlist('youtube_links')
+    download_path = "./downloads"
     for link in links:
         download_song_with_yt_dlp(link, download_path)
     return "Downloaded successfully! ", 200

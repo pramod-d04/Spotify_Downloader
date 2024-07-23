@@ -1,38 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Songs</title>
-    <script>
-        function downloadAll() {
-            var links = document.querySelectorAll(".song-link");
-            for (var i = 0; i < links.length; i++) {
-                window.open(links[i].href, '_blank');
-            }
-            document.getElementById('successMessage').style.display = 'block';
-
-            setTimeout(function() {
-                window.location.href = '/';
-            }, 15000);
-        }
-    </script>
+    <title>Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Songs</h1>
+    <h1>Spotify Downloader</h1>
+    <h2>Search Results</h2>
     <form action="/download" method="post">
-        <ul>
-            {% for track_info in track_infos %}
-            <li>
-                <input type="checkbox" name="youtube_links" value="{{ track_info['link'] }}">
-                <img src="{{ track_info['poster'] }}" alt="{{ track_info['track_title'] }}" width="100">
-                <p>{{ track_info['track_title'] }} by {{ track_info['artist_name'] }}</p>
-            </li>
-            {% endfor %}
-        </ul>
-        <input type="submit" value="Download Selected Songs">
-        <button onclick="downloadAll()">Download All</button>
-    </form>
-</body>
-</html>
+        {% for track in track_infos %}
+            <div class="track-info">
+                <h2>{{ track.track_title }} by {{ track.artist_name }}</h2>
+                <a href="{{ track.link }}" target="_blank">Watch on YouTube</a><br>
+                <img src="{{ track.poster }}" alt="YouTube Thumbnail">
+                <input type="checkbox" name="youtube_links" value="{{ track.link }}"> Download
+            </div>
+        {% endfor %}
+        <button type="submit">Download Selected</button>

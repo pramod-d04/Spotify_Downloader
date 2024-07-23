@@ -1,0 +1,46 @@
+body {
+    background-color: black; /* Set the background color to black */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #fff; /* Text color white for better contrast */
+}
+
+h1, h2 {
+    text-align: center;
+    color: #fff; /* Ensure the heading text color is white */
+}
+
+form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+form input[type="text"], form button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+form button {
+    cursor: pointer;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    margin-left: 10px;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+.track-info {
+    text-align: center;
+    margin: 20px;
+}
+
+.track-info img {
+    max-width: 150px; /* Set the maximum width */
+    height: auto; /* Maintain the aspect ratio */
+    margin-top: 10px;
+}
