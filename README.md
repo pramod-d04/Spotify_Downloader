@@ -5,19 +5,15 @@ Installation
 
     Clone the repository:
 
-    bash
+    git clone https://github.com/your_username/spotify-playlist-downloader.git
 
-git clone https://github.com/your_username/spotify-playlist-downloader.git
+
 
 Navigate to the project directory:
-
-bash
 
 cd spotify-playlist-downloader
 
 Install the required dependencies:
-
-bash
 
     pip install flask spotipy
 
