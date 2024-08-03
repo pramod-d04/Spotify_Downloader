@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloads</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Spotify Downloader</h1>
+    <h2>Download Your Songs</h2>
+    {% for file in download_files %}
+        <div class="download-link">
+            <a href="{{ url_for('download_file', filename=file) }}" target="_blank">Download {{ file.split('/')[-1] }}</a>
+        </div>
+    {% endfor %}
+</body>
+</html>

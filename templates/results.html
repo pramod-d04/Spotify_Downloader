@@ -10,12 +10,23 @@
     <h1>Spotify Downloader</h1>
     <h2>Search Results</h2>
     <form action="/download" method="post">
+        <input type="text" name="download_path" placeholder="Enter download path" required><br><br>
         {% for track in track_infos %}
             <div class="track-info">
-                <h2>{{ track.track_title }} by {{ track.artist_name }}</h2>
+                <h3>{{ track.track_title }} by {{ track.artist_name }}</h3>
                 <a href="{{ track.link }}" target="_blank">Watch on YouTube</a><br>
                 <img src="{{ track.poster }}" alt="YouTube Thumbnail">
                 <input type="checkbox" name="youtube_links" value="{{ track.link }}"> Download
             </div>
         {% endfor %}
         <button type="submit">Download Selected</button>
+    </form>
+    <form action="/download_all" method="post">
+        <input type="hidden" name="download_path" value="{{ request.form.get('download_path') }}">
+        {% for track in track_infos %}
+            <input type="hidden" name="all_links" value="{{ track.link }}">
+        {% endfor %}
+        <button type="submit">Download All</button>
+    </form>
+</body>
+</html>

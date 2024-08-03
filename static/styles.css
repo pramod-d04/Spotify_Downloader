@@ -7,14 +7,15 @@ body {
     color: #fff; /* Text color white for better contrast */
 }
 
-h1, h2 {
-    text-align: center;
+h1, h2, h3 {
+    text-align: left;
     color: #fff; /* Ensure the heading text color is white */
+    margin-left: 20px; /* Align to the left */
 }
 
 form {
-    text-align: center;
-    margin-top: 20px;
+    text-align: left;
+    margin: 20px;
 }
 
 form input[type="text"], form button {
@@ -27,7 +28,7 @@ form button {
     background-color: #28a745;
     color: #fff;
     border: none;
-    margin-left: 10px;
+    margin-top: 10px;
 }
 
 form button:hover {
@@ -35,7 +36,7 @@ form button:hover {
 }
 
 .track-info {
-    text-align: center;
+    text-align: left;
     margin: 20px;
 }
 
